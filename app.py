@@ -453,10 +453,16 @@ def load_pipeline():
     try:
         if pipeline is None:
             clear_gpu_memory()
-            print("Loading Chronos model...")
+            if torch.cuda.is_available():
+                device_map = "cuda"
+            elif torch.backends.mps.is_available():
+                device_map = "mps"
+            else:
+                device_map = "cpu"
+            print(f"Loading Chronos model by {device_map} ...")
             pipeline = ChronosPipeline.from_pretrained(
                 "amazon/chronos-t5-large",
-                device_map="cpu",  # Force CUDA device mapping
+                device_map=device_map,
                 torch_dtype=torch.float16,
                 low_cpu_mem_usage=True,
                 trust_remote_code=True,
@@ -946,10 +952,15 @@ def make_prediction_enhanced(symbol: str, timeframe: str = "1d", prediction_days
                 pipe = load_pipeline()
                 
                 # Get the model's device and dtype
-                device = torch.device("cuda:0")  # Force CUDA device mapping
+                if torch.cuda.is_available():
+                    device = torch.device("cuda:0")
+                elif torch.backends.mps.is_available():
+                    device = torch.device("mps")
+                else:
+                    device = torch.device("cpu")
                 dtype = torch.float16  # Force float16
                 print(f"Model device: {device}")
-                print(f"Model dtype: {dtype}")
+                print(f"Model dtype: {dtype if device.type != 'cpu' else torch.float32}")
                 
                 # Convert to tensor and ensure proper shape and device
                 context = torch.tensor(normalized_prices, dtype=dtype, device=device)
@@ -987,7 +998,7 @@ def make_prediction_enhanced(symbol: str, timeframe: str = "1d", prediction_days
                 print(f"Context length: {len(context)}")
                 
                 # Use predict_quantiles with proper formatting
-                with torch.amp.autocast('cuda'):
+                with torch.amp.autocast(device_type=device.type):
                     # Ensure all inputs are on GPU
                     context = context.to(device)
                     
@@ -1064,7 +1075,7 @@ def make_prediction_enhanced(symbol: str, timeframe: str = "1d", prediction_days
                         # Move any additional tensors in the tokenizer's attributes to GPU
                         for name, value in pipe.tokenizer.__dict__.items():
                             if isinstance(value, torch.Tensor):
-                                pipe.tokenizer.__dict__[name] = value.to(device)
+                                setattr(pipe.tokenizer, name, value.to(device))
                         
                         # Remove the EOS token handling since MeanScaleUniformBins doesn't use it
                         if hasattr(pipe.tokenizer, '_append_eos_token'):
@@ -1074,7 +1085,8 @@ def make_prediction_enhanced(symbol: str, timeframe: str = "1d", prediction_days
                             pipe.tokenizer._append_eos_token = wrapped_append_eos
                     
                     # Force synchronization again to ensure all tensors are on GPU
-                    torch.cuda.synchronize()
+                    if device.type == 'cuda':
+                        torch.cuda.synchronize()
                     
                     # Ensure all model components are in eval mode
                     pipe.model.eval()
@@ -1136,7 +1148,8 @@ def make_prediction_enhanced(symbol: str, timeframe: str = "1d", prediction_days
                                 setattr(module, key, value.to(device))
                     
                     # Force synchronization again to ensure all tensors are on GPU
-                    torch.cuda.synchronize()
+                    if device.type == 'cuda':
+                        torch.cuda.synchronize()
                     
                     # Ensure tokenizer is on GPU and all its tensors are on GPU
                     if hasattr(pipe, 'tokenizer'):
@@ -1165,10 +1178,11 @@ def make_prediction_enhanced(symbol: str, timeframe: str = "1d", prediction_days
                         # Move any additional tensors in the tokenizer's attributes to GPU
                         for name, value in pipe.tokenizer.__dict__.items():
                             if isinstance(value, torch.Tensor):
-                                pipe.tokenizer.__dict__[name] = value.to(device)
+                                setattr(pipe.tokenizer, name, value.to(device))
                     
                     # Force synchronization again to ensure all tensors are on GPU
-                    torch.cuda.synchronize()
+                    if device.type == 'cuda':
+                        torch.cuda.synchronize()
                     
                     # Make prediction with proper parameters
                     # Use the standard quantile levels as per Chronos documentation
@@ -1316,7 +1330,7 @@ def make_prediction_enhanced(symbol: str, timeframe: str = "1d", prediction_days
                         # Ensure next_length is valid (must be positive and reasonable)
                         next_length = max(1, min(next_length, 64))
                         
-                        with torch.amp.autocast('cuda'):
+                        with torch.amp.autocast(device_type=device.type):
                             try:
                                 next_quantiles, next_mean = pipe.predict_quantiles(
                                     context=context,
