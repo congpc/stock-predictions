@@ -77,3 +77,4 @@ python-binance
 typer
 diskcache
 anthropic
+kaleido

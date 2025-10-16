@@ -1,0 +1,139 @@
+{
+    "basic_signals": {
+        "RSI": "Neutral",
+        "MACD": "Buy",
+        "Bollinger": "Sell",
+        "SMA": "Buy",
+        "Overall": "Buy",
+        "symbol": "PNJ.VN",
+        "timeframe": "1d",
+        "strategy_used": "chronos"
+    },
+    "product_metrics": {
+        "Market_Cap": 29634286583808,
+        "Sector": "Consumer Cyclical",
+        "Industry": "Luxury Goods",
+        "Dividend_Yield": 2.36,
+        "Avg_Daily_Volume": null,
+        "Volume_Volatility": 239392.36525637537,
+        "Enterprise_Value": 30474435035136,
+        "P/E_Ratio": 15.856341,
+        "Forward_P/E": 11.603338,
+        "PEG_Ratio": null,
+        "Price_to_Book": 2.4748814,
+        "Price_to_Sales": 0.8999765
+    },
+    "risk_metrics": {
+        "Annual_Return": 0.003975815092266917,
+        "Annual_Volatility": 0.28150915610472116,
+        "Sharpe_Ratio": -0.05692242884551897,
+        "Sortino_Ratio": -0.07494440688296167,
+        "Calmar_Ratio": 0.009613578744755246,
+        "Information_Ratio": 0,
+        "Beta": 1.0,
+        "Alpha": 0.0,
+        "Correlation_with_Market": 0.0,
+        "VaR_95": -0.026609462596414668,
+        "VaR_99": -0.05692037532904798,
+        "CVaR_95": -0.044188684375561234,
+        "CVaR_99": -0.06638434573012358,
+        "Max_Drawdown": -0.4135624409833799,
+        "Skewness": 0.12457654823662258,
+        "Kurtosis": 4.653366144954324,
+        "Risk_Free_Rate": 0.02
+    },
+    "sector_metrics": {
+        "Sector": "Consumer Cyclical",
+        "Industry": "Luxury Goods",
+        "Market_Cap_Rank": "Large",
+        "Liquidity_Score": "Low",
+        "Gross_Margin": 0.20423001,
+        "Operating_Margin": 0.0758,
+        "Net_Margin": null
+    },
+    "regime_metrics": {
+        "regime": "Low Volatility Bear",
+        "regime_index": 0,
+        "probabilities": [
+            0.30148368745510606,
+            0.6985163125449134,
+            6.138939283093308e-130
+        ],
+        "means": [
+            -0.0002956759259388493,
+            0.0001901412684884256,
+            -0.0003331429436396368
+        ],
+        "volatilities": [
+            [
+                [
+                    0.012722790779608395
+                ]
+            ],
+            [
+                [
+                    0.012958925497176569
+                ]
+            ],
+            [
+                [
+                    31.622776601683793
+                ]
+            ]
+        ],
+        "method": "HMM-diag"
+    },
+    "ensemble_metrics": {
+        "ensemble_used": true,
+        "ensemble_weights": {
+            "chronos": 0.6,
+            "technical": 0.2,
+            "statistical": 0.2
+        },
+        "enhanced_features": {
+            "covariate_data_used": true,
+            "sentiment_analysis_used": true,
+            "advanced_uncertainty_methods": [
+                "basic",
+                "skewed",
+                "volatility_scaled",
+                "market_adjusted",
+                "time_decay",
+                "ensemble"
+            ],
+            "regime_aware_uncertainty": true,
+            "enhanced_volume_prediction": true
+        }
+    },
+    "advanced_signals": {
+        "signals": {
+            "RSI": {
+                "signal": "Neutral",
+                "strength": 0.3191489361702128,
+                "confidence": 0.3,
+                "value": 65.95744680851064
+            },
+            "MACD": {
+                "signal": "Buy",
+                "strength": 0.003314370732845061,
+                "confidence": 0.5325748293138024,
+                "value": 258.85749042731186
+            },
+            "Bollinger": {
+                "signal": "Sell",
+                "strength": 1.008561285018064,
+                "confidence": 0.7,
+                "position": 1.004280642509032
+            },
+            "SMA": {
+                "signal": "Buy",
+                "strength": 1.9379304120548113e-05,
+                "confidence": 0.6,
+                "ratio": 1.0000193793041205
+            }
+        },
+        "overall_signal": "Sell",
+        "confidence": 0.9974896098741902,
+        "regime_adjusted": true
+    }
+}

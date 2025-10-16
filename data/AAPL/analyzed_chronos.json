@@ -1,0 +1,133 @@
+{
+    "basic_signals": {
+        "RSI": "Neutral",
+        "MACD": "Sell",
+        "Bollinger": "Hold",
+        "SMA": "Buy",
+        "Overall": "Hold",
+        "symbol": "AAPL",
+        "timeframe": "1d",
+        "strategy_used": "chronos"
+    },
+    "product_metrics": {
+        "Market_Cap": 3700302807040,
+        "Sector": "Technology",
+        "Industry": "Consumer Electronics",
+        "Dividend_Yield": 0.42,
+        "Avg_Daily_Volume": null,
+        "Volume_Volatility": 30637231.457569867,
+        "Enterprise_Value": 3746628894720,
+        "P/E_Ratio": 37.893616,
+        "Forward_P/E": 30.004812,
+        "PEG_Ratio": null,
+        "Price_to_Book": 56.271717,
+        "Price_to_Sales": 9.055498
+    },
+    "risk_metrics": {
+        "Annual_Return": 0.3442626007425845,
+        "Annual_Volatility": 0.3081422982694459,
+        "Sharpe_Ratio": 1.052314474720516,
+        "Sortino_Ratio": 1.4510497168986614,
+        "Calmar_Ratio": 1.031946265460765,
+        "Information_Ratio": 0.02829400861993895,
+        "Beta": 1.256969009803658,
+        "Alpha": 0.04521242008280551,
+        "Correlation_with_Market": 0.7121386252061997,
+        "VaR_95": -0.029064161561006663,
+        "VaR_99": -0.04827950675502142,
+        "CVaR_95": -0.041782223700014026,
+        "CVaR_99": -0.06591030112490509,
+        "Max_Drawdown": -0.3336051616882115,
+        "Skewness": 0.9993895279089361,
+        "Kurtosis": 12.28956285557476,
+        "Risk_Free_Rate": 0.02
+    },
+    "sector_metrics": {
+        "Sector": "Technology",
+        "Industry": "Consumer Electronics",
+        "Market_Cap_Rank": "Large",
+        "Liquidity_Score": "Low",
+        "Gross_Margin": 0.46678,
+        "Operating_Margin": 0.29990998,
+        "Net_Margin": null
+    },
+    "regime_metrics": {
+        "regime": "Low Volatility Bull",
+        "regime_index": 1,
+        "probabilities": [
+            0.24171877539770953,
+            0.7582812246023448,
+            5.599177902122861e-16
+        ],
+        "means": [
+            0.0010462575945886742,
+            0.0017623133635879939,
+            -0.0013031907029871796
+        ],
+        "volatilities": [
+            [
+                0.01447855434845211
+            ],
+            [
+                0.014134782654147623
+            ],
+            [
+                736.7581995591339
+            ]
+        ],
+        "method": "HMM-full"
+    },
+    "ensemble_metrics": {
+        "ensemble_used": true,
+        "ensemble_weights": {
+            "chronos": 0.6,
+            "technical": 0.2,
+            "statistical": 0.2
+        },
+        "enhanced_features": {
+            "covariate_data_used": true,
+            "sentiment_analysis_used": true,
+            "advanced_uncertainty_methods": [
+                "basic",
+                "skewed",
+                "volatility_scaled",
+                "market_adjusted",
+                "time_decay",
+                "ensemble"
+            ],
+            "regime_aware_uncertainty": true,
+            "enhanced_volume_prediction": true
+        }
+    },
+    "advanced_signals": {
+        "signals": {
+            "RSI": {
+                "signal": "Neutral",
+                "strength": 0.28950456063283325,
+                "confidence": 0.3,
+                "value": 35.52477196835834
+            },
+            "MACD": {
+                "signal": "Sell",
+                "strength": 0.0075424935836261794,
+                "confidence": 0.7016997433450471,
+                "value": 3.2318029139162547
+            },
+            "Bollinger": {
+                "signal": "Hold",
+                "strength": 0.30987856540103265,
+                "confidence": 0.5,
+                "position": 0.3450607172994837
+            },
+            "SMA": {
+                "signal": "Buy",
+                "strength": 0.05401505842772192,
+                "confidence": 0.6,
+                "ratio": 1.054015058427722
+            }
+        },
+        "overall_signal": "Buy",
+        "confidence": 0.8596195999665942,
+        "regime_adjusted": true
+    }
+}

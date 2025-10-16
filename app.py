@@ -22,7 +22,12 @@ import warnings
 import threading
 from dataclasses import dataclass
 from transformers import GenerationConfig
+from pathlib import Path
+
 warnings.filterwarnings('ignore')
+
+# Export data to files
+use_export = True
 
 # Additional imports for advanced features
 try:
@@ -579,6 +584,27 @@ def cleanup_on_exit():
     except Exception as e:
         print(f"Error stopping market status manager: {str(e)}")
 
+# Save file
+def _save_file(df: pd.DataFrame, file_path: str):
+    # Create folder if it's not exist
+    path = Path(file_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Save file
+    df.to_json(file_path, orient="records", lines=True, date_format="iso")
+    print(f"Saved {len(df)} length to {file_path}")
+
+def _save_json_file(data: dict, file_path: str):
+    # Create folder if it's not exist
+    path = Path(file_path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Save the dictionary to a JSON file
+    with open(file_path, "w") as json_file:
+        json.dump(data, json_file, indent=4) # indent=4 makes the file human-readable
+    
+    print(f"Saved to the path of {file_path}")
+    
 def get_historical_data(symbol: str, timeframe: str = "1d", lookback_days: int = 365) -> pd.DataFrame:
     """
     Fetch historical data using yfinance with enhanced support for intraday data.
@@ -633,7 +659,7 @@ def get_historical_data(symbol: str, timeframe: str = "1d", lookback_days: int =
         # Validate data quality
         if len(df) < 10:
             raise Exception(f"Insufficient data for {symbol}: only {len(df)} data points")
-        
+                    
         # Check for missing values in critical columns
         critical_columns = ['Open', 'High', 'Low', 'Close', 'Volume']
         missing_data = df[critical_columns].isnull().sum()
@@ -3374,7 +3400,7 @@ The **Advanced Stock Prediction System** is a cutting-edge AI-powered platform w
                         step=1,
                         label="Random Real Points in Long-Horizon Context"
                     )
-                
+                    
                 with gr.Column():
                     gr.Markdown("### Ensemble Weights")
                     chronos_weight = gr.Slider(
@@ -3660,6 +3686,9 @@ The **Advanced Stock Prediction System** is a cutting-edge AI-powered platform w
                 # Get historical data for additional metrics
                 df = get_historical_data(symbol, timeframe, lookback_days)
                 
+                if use_export:
+                    _save_file(df, f'./data/{symbol}/historical_data.json')
+                
                 # Fetch fundamental data from yfinance info property
                 fundamentals = get_fundamental_data(symbol)
                 
@@ -3740,6 +3769,25 @@ The **Advanced Stock Prediction System** is a cutting-edge AI-powered platform w
                 historical = signals.get('historical', {})
                 predicted = signals.get('prediction', {})
                 
+                if use_export:
+                    data_to_save = {
+                        "basic_signals": basic_signals,
+                        "product_metrics": product_metrics,
+                        "risk_metrics": risk_metrics,
+                        "sector_metrics": sector_metrics,
+                        "regime_metrics": regime_metrics,
+                        "ensemble_metrics": ensemble_metrics,
+                        "advanced_signals": advanced_signals,
+                    }
+                    _save_json_file(data_to_save, f'./data/{symbol}/analyzed_{strategy}.json')
+                    
+                    # Export the figure to a PNG file
+                    try:
+                        fig.write_image(f'./data/{symbol}/prediction_chart_{strategy}.png', width=1200, height=1000)
+                        print(f"Saved prediction chart 'prediction_chart.png'")
+                    except Exception as img_e:
+                        print(f"Error saving image: {img_e}. Please ensure 'kaleido' is installed (`pip install kaleido`).")
+                        
                 return basic_signals, fig, product_metrics, risk_metrics, sector_metrics, regime_metrics, stress_results, ensemble_metrics, advanced_signals, historical, predicted
             except Exception as e:
                 error_message = str(e)
